@@ -1,18 +1,30 @@
-from Engine import *
-import threading
+import Engine
+import Engine.Input
 
-class Game:
+game = Engine.StartEngine(1280, 720)
 
-    def __init__(self):
-        print("Game Script Loaded")
+# Defining player variables
+PlayerX = 640
+PlayerY = 360
 
-    def StartGame(self):
-        self.Engine = StartEngine(1280, 720)
-        self.GameThread = threading.Thread(target=self.GameLoop)
-        self.GameThread.start()
+move_up = Engine.Input.NewInput('w')
+move_down = Engine.Input.NewInput('s')
+move_left = Engine.Input.NewInput('a')
+move_right = Engine.Input.NewInput('d')
 
-    def GameLoop(self):
-        while self.Engine.running:
-            self.Engine.ClearScreen()
-            self.Engine.Graphics.draw_circle(640, 360, 10)
-            self.Engine.Tick()
+# Game Loop
+while game.running:
+
+    if move_up.is_pressed():
+        PlayerY -= 2
+    elif move_down.is_pressed():
+        PlayerY += 2
+
+    if move_left.is_pressed():
+        PlayerX -= 2
+    elif move_right.is_pressed():
+        PlayerX += 2
+
+    game.ClearScreen()
+    game.Graphics.draw_circle(PlayerX, PlayerY, 10, color="Blue")
+    game.Tick()
