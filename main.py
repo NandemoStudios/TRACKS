@@ -1,7 +1,7 @@
+import requests
 from customtkinter import *
-
-import Engine
-import game
+import os
+import zipfile
 
 set_appearance_mode("Dark")
 
@@ -11,8 +11,6 @@ class Window:
     def __init__(self):
 
         self.CurrentScreen = "Home"
-
-        self.Game = game.Game()
 
         self.root = CTk()
         self.root.geometry("1280x720")
@@ -32,7 +30,7 @@ class Window:
         self.ClearScreen()
         self.StartButton = CTkButton(self.root, text="Start Game", command=self.StartEngine)
         self.SettingsButton = CTkButton(self.root, text="Settings", command=self.showSettingsPage)
-        self.QuitButton = CTkButton(self.root, text="Quit", command=quit)
+        self.QuitButton = CTkButton(self.root, text="Quit", command=self.quitgame)
 
         self.StartButton.pack()
         self.SettingsButton.pack()
@@ -63,9 +61,19 @@ class Window:
                 print("An error has occurred, please reload the game")
                 quit()
 
-    def StartEngine(self):
-        self.Game.StartGame()
+    def quitgame(self):
         self.root.destroy()
+
+    def StartEngine(self):
+        if os.path.exists(".\dist\game.exe"):
+            os.startfile(".\dist\game.exe")
+        else:
+            r = requests.get('https://github.com/NandemoStudios/TRACKS/releases/download/testRelease/TRACKS.zip')
+            file = open("TRACKS.zip", 'wb')
+            file.write(r.content)
+            file.close()
+            with zipfile.ZipFile("TRACKS.zip", 'r') as zip_ref:
+                zip_ref.extractall('./')
 
 
 startWindow = Window()
